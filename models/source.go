@@ -1,5 +1,7 @@
 package models
 
+// SourceProperty is define that after read the data by which format we should store the data in program
+// Before send the SourceProperty to the server, we need to convert the SourceProperty to JSON format using marshal function
 type SourceProperty struct {
 	ID                   string       `json:"id"`
 	Feed                 int          `json:"feed"`
