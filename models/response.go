@@ -2,7 +2,7 @@ package models
 
 // PropertyResponse is the response structure for any response from the server side.
 // from server side we got a JSON and then we need to unmarshal the JSON to PropertyResponse structure to use the data in our program
-type PropertyResponse struct {
+type ResponseProperty struct {
 	ID        string   `json:"ID"`
 	Feed      int      `json:"Feed"`
 	Published bool     `json:"Published"`
