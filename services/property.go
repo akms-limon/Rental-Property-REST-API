@@ -2,16 +2,14 @@ package services
 
 import (
 	"encoding/json"
-	"os"
 	"errors"
+	"os"
 
 	"Rental-Property-REST-API/models"
 	"github.com/beego/beego/v2/server/web"
 )
 
-
-
-//PropertiesStore akta PropertySlice er wrapper struct. jeta JSON file ke struct e
+// PropertiesStore akta PropertySlice er wrapper struct. jeta JSON file ke struct e
 // convert korar por propertySlice er vitor store kore rakhe.
 type PropertyData struct {
 	Properties []models.SourceProperty
@@ -70,7 +68,7 @@ func TransformProperty(property models.SourceProperty) (models.ResponseProperty,
 			CountryCode: property.CountryCode,
 			Name:        property.PropertyName,
 			LocationID:  property.LocationID,
-			Lon: 		 property.LonLat.Coordinates[0],
+			Lon:         property.LonLat.Coordinates[0],
 			Lat:         property.LonLat.Coordinates[1],
 			State:       property.State,
 			StateAbbr:   property.StateAbbr,
@@ -104,24 +102,23 @@ func TransformProperty(property models.SourceProperty) (models.ResponseProperty,
 
 // GetAllProperties returns all properties from the PropertyData.
 func (service *PropertyService) GetAllResponseProperties(limit *int) (models.PropertyListResponse, error) {
-    var responseProperties []models.ResponseProperty
+	responseProperties := make([]models.ResponseProperty, 0)
 
-    for _, property := range service.PropertyData.Properties {
-        responseProperty, err := TransformProperty(property)
-        if err != nil {
-            return models.PropertyListResponse{}, err
-        }
-        responseProperties = append(responseProperties, responseProperty)
-    }
+	for _, property := range service.PropertyData.Properties {
+		responseProperty, err := TransformProperty(property)
+		if err != nil {
+			return models.PropertyListResponse{}, err
+		}
+		responseProperties = append(responseProperties, responseProperty)
+	}
 	if limit != nil && *limit < len(responseProperties) {
 		responseProperties = responseProperties[:*limit]
 	}
-    return models.PropertyListResponse{
+	return models.PropertyListResponse{
 		Count: len(responseProperties),
 		Items: responseProperties,
 	}, nil
 }
-
 
 // GetPropertyByID returns a property by its ID.
 func (service *PropertyService) GetPropertyByID(id string) (models.ResponseProperty, error) {

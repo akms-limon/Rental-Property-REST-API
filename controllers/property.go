@@ -21,6 +21,7 @@ type PropertyController struct {
 // GetProperties returns a list of rental properties.
 // @Title Get Properties
 // @Description Get rental properties with optional filters.
+// @Param limit query int false "Maximum number of properties to return"
 // @Success 200 {object} models.PropertyListResponse
 // @Failure 400 {object} models.ErrorResponse
 // @router / [get]
@@ -63,9 +64,9 @@ func (controller *PropertyController) GetProperties() {
 	controller.ServeJSON()
 }
 
-// Method to handle GET requests for a single property by ID
 // @Title Get Property
 // @Description Get a rental property by ID.
+// @Param id path string true "Property ID"
 // @Success 200 {object} models.ResponseProperty
 // @Failure 404 {object} models.ErrorResponse
 // @router /:id [get]

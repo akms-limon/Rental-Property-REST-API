@@ -16,6 +16,12 @@ paths:
         Get rental properties with optional filters.
         <br>
       operationId: PropertyController.Get Properties
+      parameters:
+      - in: query
+        name: limit
+        description: Maximum number of properties to return
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
@@ -31,6 +37,12 @@ paths:
         Get a rental property by ID.
         <br>
       operationId: PropertyController.Get Property
+      parameters:
+      - in: path
+        name: id
+        description: Property ID
+        required: true
+        type: string
       responses:
         "200":
           description: ""

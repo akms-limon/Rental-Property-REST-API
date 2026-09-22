@@ -5,7 +5,7 @@
         "description": "REST API for searching and retrieving rental properties\n",
         "version": "1.0.0",
         "contact": {
-            "email": "Your Name"
+            "email": "A K M S Limon <"
         }
     },
     "basePath": "/v1",
@@ -17,6 +17,15 @@
                 ],
                 "description": "Get rental properties with optional filters.\n\u003cbr\u003e",
                 "operationId": "PropertyController.Get Properties",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "description": "Maximum number of properties to return",
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "",
@@ -37,6 +46,15 @@
                 ],
                 "description": "Get a rental property by ID.\n\u003cbr\u003e",
                 "operationId": "PropertyController.Get Property",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Property ID",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "",
