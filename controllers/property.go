@@ -25,21 +25,36 @@ type PropertyController struct {
 // @Failure 400 {object} models.ErrorResponse
 // @router /properties [get]
 func (controller *PropertyController) GetProperties() {
-	limitText := controller.GetString("limit")
-	limit, err := validators.ValidateLimit(limitText)
-	limit = limit
-	if err != nil {
-		logs.Error("Error validating limit: ", err)
-		controller.Ctx.ResponseWriter.WriteHeader(400)
-		controller.Data["json"] = models.ErrorResponse{Error: err.Error()}
-		controller.ServeJSON()
-		return
+	query := controller.Ctx.Request.URL.Query()
+
+	var limit *int
+
+	if values, exists := query["limit"]; exists {
+		limitValue := values[0]
+
+		validatedLimit, err := validators.ValidateLimit(limitValue)
+		if err != nil {
+			logs.Error("Invalid limit: %v", err)
+
+			controller.Ctx.ResponseWriter.WriteHeader(400)
+			controller.Data["json"] = models.ErrorResponse{
+				Error: err.Error(),
+			}
+			controller.ServeJSON()
+			return
+		}
+
+		limit = &validatedLimit
 	}
 
-	properties, err := PropertyService.GetAllResponseProperties()
+	properties, err := PropertyService.GetAllResponseProperties(limit)
 	if err != nil {
+		logs.Error("Failed to get properties: %v", err)
+
 		controller.Ctx.ResponseWriter.WriteHeader(500)
-		controller.Data["json"] = models.ErrorResponse{Error: err.Error()}
+		controller.Data["json"] = models.ErrorResponse{
+			Error: err.Error(),
+		}
 		controller.ServeJSON()
 		return
 	}

@@ -102,7 +102,7 @@ func TransformProperty(property models.SourceProperty) (models.ResponseProperty,
 }
 
 // GetAllProperties returns all properties from the PropertyData.
-func (service *PropertyService) GetAllResponseProperties() ([]models.ResponseProperty, error) {
+func (service *PropertyService) GetAllResponseProperties(limit *int) ([]models.ResponseProperty, error) {
     var responseProperties []models.ResponseProperty
 
     for _, property := range service.PropertyData.Properties {
@@ -112,5 +112,8 @@ func (service *PropertyService) GetAllResponseProperties() ([]models.ResponsePro
         }
         responseProperties = append(responseProperties, responseProperty)
     }
+	if limit != nil && *limit < len(responseProperties) {
+		responseProperties = responseProperties[:*limit]
+	}
     return responseProperties, nil
 }
