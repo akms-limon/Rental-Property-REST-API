@@ -1,12 +1,12 @@
 package controllers
 
 import (
-	"Rental-Property-REST-API/services"
 	"Rental-Property-REST-API/models"
+	"Rental-Property-REST-API/services"
 	"Rental-Property-REST-API/validators"
 
-	beego "github.com/beego/beego/v2/server/web"
 	"github.com/beego/beego/v2/core/logs"
+	beego "github.com/beego/beego/v2/server/web"
 )
 
 // Keeping a global variable for PropertyService to be used in the controller methods
@@ -23,7 +23,7 @@ type PropertyController struct {
 // @Description Get rental properties with optional filters.
 // @Success 200 {object} models.PropertyListResponse
 // @Failure 400 {object} models.ErrorResponse
-// @router /properties [get]
+// @router / [get]
 func (controller *PropertyController) GetProperties() {
 	query := controller.Ctx.Request.URL.Query()
 
@@ -64,6 +64,11 @@ func (controller *PropertyController) GetProperties() {
 }
 
 // Method to handle GET requests for a single property by ID
+// @Title Get Property
+// @Description Get a rental property by ID.
+// @Success 200 {object} models.ResponseProperty
+// @Failure 404 {object} models.ErrorResponse
+// @router /:id [get]
 func (controller *PropertyController) GetProperty() {
 	if PropertyService == nil {
 		controller.Ctx.WriteString("PropertyService is nill or not initialized.")

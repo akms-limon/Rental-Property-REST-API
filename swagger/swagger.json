@@ -4,14 +4,233 @@
         "title": "Rental Property API",
         "description": "REST API for searching and retrieving rental properties\n",
         "version": "1.0.0",
-        "contact": {}
+        "contact": {
+            "email": "Your Name"
+        }
     },
     "basePath": "/v1",
-    "paths": null,
+    "paths": {
+        "/properties/": {
+            "get": {
+                "tags": [
+                    "properties"
+                ],
+                "description": "Get rental properties with optional filters.\n\u003cbr\u003e",
+                "operationId": "PropertyController.Get Properties",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.PropertyListResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "{object} models.ErrorResponse"
+                    }
+                }
+            }
+        },
+        "/properties/{id}": {
+            "get": {
+                "tags": [
+                    "properties"
+                ],
+                "description": "Get a rental property by ID.\n\u003cbr\u003e",
+                "operationId": "PropertyController.Get Property",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseProperty"
+                        }
+                    },
+                    "404": {
+                        "description": "{object} models.ErrorResponse"
+                    }
+                }
+            }
+        }
+    },
     "definitions": {
-        "models.Response": {
-            "title": "Response",
-            "type": "object"
+        "models.Breadcrumb": {
+            "title": "Breadcrumb",
+            "type": "object",
+            "properties": {
+                "Display": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "LocationID": {
+                    "type": "string"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "Slug": {
+                    "type": "string"
+                },
+                "Type": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Counts": {
+            "title": "Counts",
+            "type": "object",
+            "properties": {
+                "Bathroom": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Bedroom": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Occupancy": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Reviews": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "models.GeoInfo": {
+            "title": "GeoInfo",
+            "type": "object",
+            "properties": {
+                "Breadcrumbs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Breadcrumb"
+                    }
+                },
+                "City": {
+                    "type": "string"
+                },
+                "Country": {
+                    "type": "string"
+                },
+                "CountryCode": {
+                    "type": "string"
+                },
+                "Lat": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "LocationID": {
+                    "type": "string"
+                },
+                "Lon": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "State": {
+                    "type": "string"
+                },
+                "StateAbbr": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Image": {
+            "title": "Image",
+            "type": "object",
+            "properties": {
+                "Count": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Images": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "models.Property": {
+            "title": "Property",
+            "type": "object",
+            "properties": {
+                "Amenities": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "Counts": {
+                    "$ref": "#/definitions/models.Counts"
+                },
+                "Image": {
+                    "$ref": "#/definitions/models.Image"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "Price": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "PropertyType": {
+                    "type": "string"
+                },
+                "ReviewScore": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "Slug": {
+                    "type": "string"
+                },
+                "StarRating": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "models.PropertyListResponse": {
+            "title": "PropertyListResponse",
+            "type": "object",
+            "properties": {
+                "Count": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ResponseProperty"
+                    }
+                }
+            }
+        },
+        "models.ResponseProperty": {
+            "title": "ResponseProperty",
+            "type": "object",
+            "properties": {
+                "Feed": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "GeoInfo": {
+                    "$ref": "#/definitions/models.GeoInfo"
+                },
+                "ID": {
+                    "type": "string"
+                },
+                "Property": {
+                    "$ref": "#/definitions/models.Property"
+                },
+                "Published": {
+                    "type": "boolean"
+                }
+            }
         }
     }
 }
