@@ -8,11 +8,10 @@ import (
 
 // Keeping a global variable for PropertyService to be used in the controller methods
 // and the assignment operation is done in main.go
-var PropertyService  *services.PropertyService
-
+var PropertyService *services.PropertyService
 
 type PropertyController struct {
-	beego.Controller  // Beego gives us request/response information through the embedded controller
+	beego.Controller // Beego gives us request/response information through the embedded controller
 }
 
 // Method to handle GET requests for all properties
@@ -20,17 +19,14 @@ type PropertyController struct {
 // GetProperties returns a list of rental properties.
 // @Title Get Properties
 // @Description Get rental properties with optional filters.
-// @Success 200 {object} models.Response
+// @Success 200 {object} models.PropertyListResponse
 // @Failure 400 {object} models.ErrorResponse
-// @router /v1/properties [get]
+// @router /properties [get]
 func (controller *PropertyController) GetProperties() {
-	if PropertyService == nil {
-		controller.Ctx.WriteString("PropertyService is nill or not initialized.")
-		return
-	}
-	controller.Ctx.WriteString("Properties are available.");
+	properties := PropertyService.GetAllProperties()
+	controller.Data["json"] = properties
+	controller.ServeJSON()
 }
-
 
 // Method to handle GET requests for a single property by ID
 func (controller *PropertyController) GetProperty() {
@@ -38,5 +34,5 @@ func (controller *PropertyController) GetProperty() {
 		controller.Ctx.WriteString("PropertyService is nill or not initialized.")
 		return
 	}
-	controller.Ctx.WriteString("Property is available.");
+	controller.Ctx.WriteString("Property is available.")
 }

@@ -46,3 +46,8 @@ func NewPropertyService(PropertyData *PropertyData) *PropertyService {
 		PropertyData: PropertyData,
 	}
 }
+
+// GetAllProperties returns all properties from the PropertyData.
+func (service *PropertyService) GetAllProperties() []models.SourceProperty {
+	return service.PropertyData.Properties
+}

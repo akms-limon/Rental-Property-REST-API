@@ -1,0 +1,17 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Rental Property API",
+        "description": "REST API for searching and retrieving rental properties\n",
+        "version": "1.0.0",
+        "contact": {}
+    },
+    "basePath": "/v1",
+    "paths": null,
+    "definitions": {
+        "models.Response": {
+            "title": "Response",
+            "type": "object"
+        }
+    }
+}

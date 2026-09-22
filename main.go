@@ -22,5 +22,10 @@ func main() {
 	// Assign the created PropertyService instance to the global variable
 	controllers.PropertyService = propertyService
 
+	if beego.BConfig.RunMode == "dev" {
+		beego.BConfig.WebConfig.DirectoryIndex = true
+		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
+	}
+
 	beego.Run()
 }

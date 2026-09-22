@@ -54,3 +54,12 @@ type Image struct {
 	Count  int      `json:"Count"`
 	Images []string `json:"Images"`
 }
+
+type PropertyListResponse struct {
+	Count int                `json:"Count"`
+	Items []ResponseProperty `json:"Items"`
+}
+
+type ErrorResponse struct {
+	Error string `json:"Error"`
+}

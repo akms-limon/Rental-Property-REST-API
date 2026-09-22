@@ -1,0 +1,12 @@
+swagger: "2.0"
+info:
+  title: Rental Property API
+  description: |
+    REST API for searching and retrieving rental properties
+  version: 1.0.0
+basePath: /v1
+paths: {}
+definitions:
+  models.Response:
+    title: Response
+    type: object
