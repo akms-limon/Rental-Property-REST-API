@@ -3,8 +3,10 @@ package controllers
 import (
 	"Rental-Property-REST-API/services"
 	"Rental-Property-REST-API/models"
+	"Rental-Property-REST-API/validators"
 
 	beego "github.com/beego/beego/v2/server/web"
+	"github.com/beego/beego/v2/core/logs"
 )
 
 // Keeping a global variable for PropertyService to be used in the controller methods
@@ -23,10 +25,21 @@ type PropertyController struct {
 // @Failure 400 {object} models.ErrorResponse
 // @router /properties [get]
 func (controller *PropertyController) GetProperties() {
+	limitText := controller.GetString("limit")
+	limit, err := validators.ValidateLimit(limitText)
+	limit = limit
+	if err != nil {
+		logs.Error("Error validating limit: ", err)
+		controller.Ctx.ResponseWriter.WriteHeader(400)
+		controller.Data["json"] = models.ErrorResponse{Error: err.Error()}
+		controller.ServeJSON()
+		return
+	}
+
 	properties, err := PropertyService.GetAllResponseProperties()
 	if err != nil {
-		controller.Data["json"] = models.ErrorResponse{Error: err.Error()}
 		controller.Ctx.ResponseWriter.WriteHeader(500)
+		controller.Data["json"] = models.ErrorResponse{Error: err.Error()}
 		controller.ServeJSON()
 		return
 	}
