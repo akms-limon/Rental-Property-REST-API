@@ -3,6 +3,7 @@ package services
 import (
 	"encoding/json"
 	"os"
+	"errors"
 
 	"Rental-Property-REST-API/models"
 	"github.com/beego/beego/v2/server/web"
@@ -119,4 +120,15 @@ func (service *PropertyService) GetAllResponseProperties(limit *int) (models.Pro
 		Count: len(responseProperties),
 		Items: responseProperties,
 	}, nil
+}
+
+
+// GetPropertyByID returns a property by its ID.
+func (service *PropertyService) GetPropertyByID(id string) (models.ResponseProperty, error) {
+	for _, property := range service.PropertyData.Properties {
+		if property.ID == id {
+			return TransformProperty(property)
+		}
+	}
+	return models.ResponseProperty{}, errors.New("property not found")
 }

@@ -70,9 +70,20 @@ func (controller *PropertyController) GetProperties() {
 // @Failure 404 {object} models.ErrorResponse
 // @router /:id [get]
 func (controller *PropertyController) GetProperty() {
-	if PropertyService == nil {
-		controller.Ctx.WriteString("PropertyService is nill or not initialized.")
+	propertyID := controller.Ctx.Input.Param(":id")
+
+	property, err := PropertyService.GetPropertyByID(propertyID)
+	if err != nil {
+		logs.Error("Property not found: %v", err)
+
+		controller.Ctx.ResponseWriter.WriteHeader(404)
+		controller.Data["json"] = models.ErrorResponse{
+			Error: "Property not found",
+		}
+		controller.ServeJSON()
 		return
 	}
-	controller.Ctx.WriteString("Property is available.")
+
+	controller.Data["json"] = property
+	controller.ServeJSON()
 }
