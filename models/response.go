@@ -28,7 +28,7 @@ type Breadcrumb struct {
 	Name       string `json:"Name"`
 	Type       string `json:"Type"`
 	Slug       string `json:"Slug"`
-	Display    string `json:"Display"`
+	Display    []string `json:"Display"`
 }
 
 type Property struct {

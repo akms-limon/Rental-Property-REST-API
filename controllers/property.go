@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"Rental-Property-REST-API/services"
+	"Rental-Property-REST-API/models"
 
 	beego "github.com/beego/beego/v2/server/web"
 )
@@ -15,7 +16,6 @@ type PropertyController struct {
 }
 
 // Method to handle GET requests for all properties
-
 // GetProperties returns a list of rental properties.
 // @Title Get Properties
 // @Description Get rental properties with optional filters.
@@ -23,7 +23,14 @@ type PropertyController struct {
 // @Failure 400 {object} models.ErrorResponse
 // @router /properties [get]
 func (controller *PropertyController) GetProperties() {
-	properties := PropertyService.GetAllProperties()
+	properties, err := PropertyService.GetAllResponseProperties()
+	if err != nil {
+		controller.Data["json"] = models.ErrorResponse{Error: err.Error()}
+		controller.Ctx.ResponseWriter.WriteHeader(500)
+		controller.ServeJSON()
+		return
+	}
+
 	controller.Data["json"] = properties
 	controller.ServeJSON()
 }
