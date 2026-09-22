@@ -8,33 +8,41 @@ import (
 	"github.com/beego/beego/v2/server/web"
 )
 
-
 //PropertiesStore akta PropertySlice er wrapper struct. jeta JSON file ke struct e
 // convert korar por propertySlice er vitor store kore rakhe.
 
-type PropertiesStore struct {
-	PropertySlice []models.SourceProperty
+type PropertyData struct {
+	Properties []models.SourceProperty
 }
 
-func PropertiesReader() (*PropertiesStore, error) {
-	path, err := web.AppConfig.String("property_data_path")
+func LoadPropertiesFromFile() (*PropertyData, error) {
+	dataFilePath, err := web.AppConfig.String("property_data_path")
 	if err != nil {
 		return nil, err
 	}
 
-	data, err := os.ReadFile(path)
+	data, err := os.ReadFile(dataFilePath)
 	if err != nil {
 		return nil, err
 	}
 
-	var propertySlice []models.SourceProperty
-
-	err = json.Unmarshal(data, &propertySlice)
+	var properties []models.SourceProperty
+	err = json.Unmarshal(data, &properties)
 	if err != nil {
 		return nil, err
 	}
 
-	return &PropertiesStore{
-		PropertySlice: propertySlice,
+	return &PropertyData{
+		Properties: properties,
 	}, nil
+}
+
+type PropertyService struct {
+	PropertyData *PropertyData
+}
+
+func NewPropertyService(PropertyData *PropertyData) *PropertyService {
+	return &PropertyService{
+		PropertyData: PropertyData,
+	}
 }

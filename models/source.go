@@ -1,6 +1,5 @@
 package models
 
-// SourceProperty is define that after read the data by which format we should store the data in program
 // Before send the SourceProperty to the server, we need to convert the SourceProperty to JSON format using marshal function
 
 // Fun fact: We need upper case for struct field names to make them exported and accessible from other files. but we need 
