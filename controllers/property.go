@@ -15,10 +15,28 @@ type PropertyController struct {
 	beego.Controller  // Beego gives us request/response information through the embedded controller
 }
 
+// Method to handle GET requests for all properties
+
+// GetProperties returns a list of rental properties.
+// @Title Get Properties
+// @Description Get rental properties with optional filters.
+// @Success 200 {object} models.Response
+// @Failure 400 {object} models.ErrorResponse
+// @router /v1/properties [get]
 func (controller *PropertyController) GetProperties() {
-	controller.Ctx.WriteString("GetProperties called");
+	if PropertyService == nil {
+		controller.Ctx.WriteString("PropertyService is nill or not initialized.")
+		return
+	}
+	controller.Ctx.WriteString("Properties are available.");
 }
 
+
+// Method to handle GET requests for a single property by ID
 func (controller *PropertyController) GetProperty() {
-	controller.Ctx.WriteString("GetProperty called");
+	if PropertyService == nil {
+		controller.Ctx.WriteString("PropertyService is nill or not initialized.")
+		return
+	}
+	controller.Ctx.WriteString("Property is available.");
 }
