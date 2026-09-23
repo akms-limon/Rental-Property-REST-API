@@ -39,7 +39,6 @@ func (controller *PropertyController) GetProperties() {
 		controller.ServeJSON()
 		return
 	}
-
 	controller.Data["json"] = properties
 	controller.ServeJSON()
 }
@@ -64,7 +63,6 @@ func (controller *PropertyController) GetProperty() {
 		controller.ServeJSON()
 		return
 	}
-
 	controller.Data["json"] = property
 	controller.ServeJSON()
 }
