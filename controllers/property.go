@@ -3,7 +3,6 @@ package controllers
 import (
 	"Rental-Property-REST-API/models"
 	"Rental-Property-REST-API/services"
-	"Rental-Property-REST-API/validators"
 
 	"github.com/beego/beego/v2/core/logs"
 	beego "github.com/beego/beego/v2/server/web"
@@ -26,29 +25,10 @@ type PropertyController struct {
 // @Failure 400 {object} models.ErrorResponse
 // @router / [get]
 func (controller *PropertyController) GetProperties() {
-	query := controller.Ctx.Request.URL.Query()
 
-	var limit *int
+	var limit = 10
 
-	if values, exists := query["limit"]; exists {
-		limitValue := values[0]
-
-		validatedLimit, err := validators.ValidateLimit(limitValue)
-		if err != nil {
-			logs.Error("Invalid limit: %v", err)
-
-			controller.Ctx.ResponseWriter.WriteHeader(400)
-			controller.Data["json"] = models.ErrorResponse{
-				Error: err.Error(),
-			}
-			controller.ServeJSON()
-			return
-		}
-
-		limit = &validatedLimit
-	}
-
-	properties, err := PropertyService.GetAllResponseProperties(limit)
+	properties, err := PropertyService.GetAllResponseProperties(&limit)
 	if err != nil {
 		logs.Error("Failed to get properties: %v", err)
 

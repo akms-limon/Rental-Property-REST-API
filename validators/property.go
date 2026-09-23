@@ -2,37 +2,30 @@ package validators
 
 import (
 	"errors"
-	"strconv"
 	"net/url"
 
-	"Rental-Property-REST-API/models"
 )
 
-func ValidateLimit(value string) (int, error) {
-	if value == "" {
-		return 0, nil
+func ValidatePropertyParameters(query url.Values) error {
+	supportedParameters := map[string]bool{
+		"min_price":       true,
+		"max_price":       true,
+		"min_star_rating": true,
+		"min_review_score": true,
+		"min_reviews":     true,
+		"published":       true,
+		"property_type":   true,
+		"feed":            true,
+		"min_bedroom":     true,
+		"amenities":       true,
+		"limit":           true,
 	}
-	limit, err := strconv.Atoi(value)
-	if err != nil || limit <= 0 {
-		return 0, errors.New("limit must be a positive integer")
-	}
-	return limit, nil
-}
 
-func ParsePropertyFilters(query url.Values) (models.PropertyFilters, error) {
-    filters := models.PropertyFilters{}
-	if values, exists := query["min_price"]; exists {
-		if values[0] == "" {
-			return models.PropertyFilters{}, errors.New("min_price cannot be empty")
+	for parameter := range query {
+		if !supportedParameters[parameter] {
+			return errors.New("unsupported query parameter: " + parameter)
 		}
-
-		value, err := strconv.ParseFloat(values[0], 64)
-		if err != nil {
-			return models.PropertyFilters{}, errors.New("min_price must be a valid number")
-		}
-
-		filters.MinPrice = &value
 	}
 
-	return filters, nil
+	return nil
 }

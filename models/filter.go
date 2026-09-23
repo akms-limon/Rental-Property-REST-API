@@ -12,4 +12,5 @@ type PropertyFilters struct {
     Feed           *int
     MinBedroom     *int
     Amenities      []string
+	Limit		   *int
 }
