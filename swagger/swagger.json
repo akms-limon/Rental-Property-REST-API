@@ -5,7 +5,7 @@
         "description": "REST API for searching and retrieving rental properties\n",
         "version": "1.0.0",
         "contact": {
-            "email": "A K M S Limon <"
+            "email": "Your Name"
         }
     },
     "basePath": "/v1",
@@ -214,6 +214,15 @@
         },
         "models.PropertyListResponse": {
             "title": "PropertyListResponse",
+            "type": "object",
+            "properties": {
+                "Result": {
+                    "$ref": "#/definitions/models.PropertyListResult"
+                }
+            }
+        },
+        "models.PropertyListResult": {
+            "title": "PropertyListResult",
             "type": "object",
             "properties": {
                 "Count": {

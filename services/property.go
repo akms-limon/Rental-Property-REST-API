@@ -115,8 +115,10 @@ func (service *PropertyService) GetAllResponseProperties(limit *int) (models.Pro
 		responseProperties = responseProperties[:*limit]
 	}
 	return models.PropertyListResponse{
-		Count: len(responseProperties),
-		Items: responseProperties,
+		Result: models.PropertyListResult{
+			Count: len(responseProperties),
+			Items: responseProperties,
+		},
 	}, nil
 }
 

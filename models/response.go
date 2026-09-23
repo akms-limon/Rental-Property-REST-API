@@ -24,10 +24,10 @@ type GeoInfo struct {
 }
 
 type Breadcrumb struct {
-	LocationID string `json:"LocationID"`
-	Name       string `json:"Name"`
-	Type       string `json:"Type"`
-	Slug       string `json:"Slug"`
+	LocationID string   `json:"LocationID"`
+	Name       string   `json:"Name"`
+	Type       string   `json:"Type"`
+	Slug       string   `json:"Slug"`
 	Display    []string `json:"Display"`
 }
 
@@ -56,6 +56,10 @@ type Image struct {
 }
 
 type PropertyListResponse struct {
+	Result PropertyListResult `json:"Result"`
+}
+
+type PropertyListResult struct {
 	Count int                `json:"Count"`
 	Items []ResponseProperty `json:"Items"`
 }

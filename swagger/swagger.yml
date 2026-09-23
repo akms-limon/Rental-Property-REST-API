@@ -153,6 +153,12 @@ definitions:
     title: PropertyListResponse
     type: object
     properties:
+      Result:
+        $ref: '#/definitions/models.PropertyListResult'
+  models.PropertyListResult:
+    title: PropertyListResult
+    type: object
+    properties:
       Count:
         type: integer
         format: int64
