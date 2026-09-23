@@ -41,10 +41,63 @@ type PropertyService struct {
 	PropertyData *PropertyData
 }
 
-func NewPropertyService(PropertyData *PropertyData) *PropertyService {
+func NewPropertyService(propertyData *PropertyData) *PropertyService {
 	return &PropertyService{
-		PropertyData: PropertyData,
+		PropertyData: propertyData,
 	}
+}
+
+// Filter all properties
+func FilterProperties(properties []models.SourceProperty, filters models.PropertyFilters) []models.SourceProperty {
+	var filtered []models.SourceProperty
+	for _, property := range properties {
+		if filters.MinPrice != nil && property.USDPrice < *filters.MinPrice {
+			continue
+		}
+		if filters.MaxPrice != nil && property.USDPrice > *filters.MaxPrice {
+			continue
+		}
+		if filters.MinStarRating != nil && property.StarRating < *filters.MinStarRating {
+			continue
+		}
+		if filters.MinReviewScore != nil && property.ReviewScoreGeneral < *filters.MinReviewScore {
+			continue
+		}
+		if filters.MinReviews != nil && property.NumberOfReview < *filters.MinReviews {
+			continue
+		}
+		if filters.Published != nil && property.Published != *filters.Published {
+			continue
+		}
+		if filters.PropertyType != "" && property.PropertyTypeCategory != filters.PropertyType {
+			continue
+		}
+		if filters.Feed != nil && property.Feed != *filters.Feed {
+			continue
+		}
+		if filters.MinBedroom != nil && property.BedroomCount < *filters.MinBedroom {
+			continue
+		}
+		if len(filters.Amenities) > 0 {
+			matched := false
+			for _, requestedAmenity := range filters.Amenities {
+				for _, propertyAmenity := range property.AmenityCategories {
+					if requestedAmenity == propertyAmenity {
+						matched = true
+						break
+					}
+				}
+				if matched {
+					break
+				}
+			}
+			if !matched {
+				continue
+			}
+		}
+		filtered = append(filtered, property)
+	}
+	return filtered
 }
 
 // TransformProperty transforms a SourceProperty to a ResponseProperty.
@@ -101,19 +154,22 @@ func TransformProperty(property models.SourceProperty) (models.ResponseProperty,
 }
 
 // GetAllProperties returns all properties from the PropertyData.
-func (service *PropertyService) GetAllResponseProperties(limit *int) (models.PropertyListResponse, error) {
-	responseProperties := make([]models.ResponseProperty, 0)
+func (service *PropertyService) GetAllProperties(filters models.PropertyFilters) (models.PropertyListResponse, error) {
+	filteredProperties := FilterProperties(service.PropertyData.Properties, filters)
 
-	for _, property := range service.PropertyData.Properties {
+	responseProperties := make([]models.ResponseProperty, 0)
+	for _, property := range filteredProperties {
 		responseProperty, err := TransformProperty(property)
 		if err != nil {
 			return models.PropertyListResponse{}, err
 		}
 		responseProperties = append(responseProperties, responseProperty)
 	}
-	if limit != nil && *limit < len(responseProperties) {
-		responseProperties = responseProperties[:*limit]
+
+	if filters.Limit != nil && *filters.Limit < len(responseProperties) {
+		responseProperties = responseProperties[:*filters.Limit]
 	}
+
 	return models.PropertyListResponse{
 		Result: models.PropertyListResult{
 			Count: len(responseProperties),

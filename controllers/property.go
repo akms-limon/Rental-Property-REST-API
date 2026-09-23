@@ -3,6 +3,7 @@ package controllers
 import (
 	"Rental-Property-REST-API/models"
 	"Rental-Property-REST-API/services"
+	"Rental-Property-REST-API/validators"
 
 	"github.com/beego/beego/v2/core/logs"
 	beego "github.com/beego/beego/v2/server/web"
@@ -25,20 +26,31 @@ type PropertyController struct {
 // @Failure 400 {object} models.ErrorResponse
 // @router / [get]
 func (controller *PropertyController) GetProperties() {
+	query := controller.Ctx.Request.URL.Query()
+	var filters models.PropertyFilters
 
-	var limit = 10
-
-	properties, err := PropertyService.GetAllResponseProperties(&limit)
-	if err != nil {
-		logs.Error("Failed to get properties: %v", err)
-
-		controller.Ctx.ResponseWriter.WriteHeader(500)
-		controller.Data["json"] = models.ErrorResponse{
-			Error: err.Error(),
+	if len(query) > 0 {
+		if err := validators.ValidatePropertyParameters(query); err != nil {
+			logs.Error(err)
+			controller.CustomAbort(400, err.Error())
+			return
 		}
-		controller.ServeJSON()
+		var err error
+		filters, err = validators.ParsePropertyFilters(query)
+		if err != nil {
+			logs.Error(err)
+			controller.CustomAbort(400, err.Error())
+			return
+		}
+	}
+
+	properties, err := PropertyService.GetAllProperties(filters)
+	if err != nil {
+		logs.Error(err)
+		controller.CustomAbort(500, err.Error())
 		return
 	}
+
 	controller.Data["json"] = properties
 	controller.ServeJSON()
 }

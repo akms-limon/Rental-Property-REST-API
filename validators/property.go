@@ -1,37 +1,49 @@
 package validators
 
 import (
-	"errors"
-	"net/url"
 	"Rental-Property-REST-API/models"
 	"Rental-Property-REST-API/utils"
+	"errors"
+	"net/url"
 )
-
 
 // Parameter validator function
 func ValidatePropertyParameters(query url.Values) error {
 	supportedParameters := map[string]bool{
-		"min_price":       true,
-		"max_price":       true,
-		"min_star_rating": true,
+		"min_price":        true,
+		"max_price":        true,
+		"min_star_rating":  true,
 		"min_review_score": true,
-		"min_reviews":     true,
-		"published":       true,
-		"property_type":   true,
-		"feed":            true,
-		"min_bedroom":     true,
-		"amenities":       true,
-		"limit":           true,
+		"min_reviews":      true,
+		"published":        true,
+		"property_type":    true,
+		"feed":             true,
+		"min_bedroom":      true,
+		"amenities":        true,
+		"limit":            true,
 	}
 
 	for parameter := range query {
 		if !supportedParameters[parameter] {
-			return errors.New("unsupported query parameter: " + parameter)
+			return errors.New("Unsupported query parameter: " + parameter)
 		}
 	}
 
 	return nil
 }
+
+/* For better understanding
+	query := url.Values{
+    	"min_price": {"50"},
+    	"limit":     {"10"},
+    	"amenities":      {"wifi", "pool"},
+	}
+
+	so if,
+	values, ok := query[amenities]
+	then,
+	values[0] = {"wifi", "pool"} for amenities
+*/
 
 // Validator for filter parameter's values
 func ParsePropertyFilters(query url.Values) (models.PropertyFilters, error) {
@@ -86,17 +98,25 @@ func ParsePropertyFilters(query url.Values) (models.PropertyFilters, error) {
 			filters.Published = &published
 
 		case "property_type":
-			if values[0] == "" {
-				return filters, errors.New("property_type cannot be empty")
+			switch values[0] {
+			case "Hotel", "House", "Apartment", "Villa", "Resort", "Hostel":
+				filters.PropertyType = values[0]
+			default:
+				return filters, errors.New("property_type must be one of: Hotel, House, Apartment, Villa, Resort, Hostel")
 			}
-			filters.PropertyType = values[0]
 
 		case "feed":
 			feed, err := utils.ParseInt(values[0], "feed")
 			if err != nil {
 				return filters, err
 			}
-			filters.Feed = &feed
+
+			switch feed {
+			case 11, 12, 22, 24:
+				filters.Feed = &feed
+			default:
+				return filters, errors.New("feed must be one of: 11, 12, 22, 24")
+			}
 
 		case "min_bedroom":
 			minBedroom, err := utils.ParseInt(values[0], "min_bedroom")
