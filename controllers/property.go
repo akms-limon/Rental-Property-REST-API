@@ -17,10 +17,18 @@ type PropertyController struct {
 	beego.Controller // Beego gives us request/response information through the embedded controller
 }
 
-// Method to handle GET requests for all properties
-// GetProperties returns a list of rental properties.
 // @Title Get Properties
 // @Description Get rental properties with optional filters.
+// @Param min_price query number false "Minimum USD price"
+// @Param max_price query number false "Maximum USD price"
+// @Param min_star_rating query int false "Minimum star rating"
+// @Param min_review_score query number false "Minimum review score"
+// @Param min_reviews query int false "Minimum number of reviews"
+// @Param published query boolean false "Published status"
+// @Param property_type query string false "Property type: Hotel, House, Apartment, Villa, Resort, Hostel"
+// @Param feed query int false "Feed: 11, 12, 22, or 24"
+// @Param min_bedroom query int false "Minimum number of bedrooms"
+// @Param amenities query string false "Comma-separated amenities, e.g. Internet,Parking"
 // @Param limit query int false "Maximum number of properties to return"
 // @Success 200 {object} models.PropertyListResponse
 // @Failure 400 {object} models.ErrorResponse
