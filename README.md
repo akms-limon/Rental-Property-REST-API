@@ -1,7 +1,8 @@
-Rental-Property-REST-API
+# Rental Property REST API
 
+### Query Architecture for `GET /v1/properties`
 
-## Query Architecture for `v1/properties` endpoint
+```text
 GET /v1/properties?feed=11&min_price=50&limit=10
                     │
                     ▼
@@ -67,3 +68,6 @@ GET /v1/properties?feed=11&min_price=50&limit=10
                                                         │
                                                         ▼
                                                       JSON
+```
+
+### Query Architecture for `Get /v1/properties/:id`
