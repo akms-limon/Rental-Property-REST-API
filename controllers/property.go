@@ -40,14 +40,15 @@ func (controller *PropertyController) GetProperties() {
 	if len(query) > 0 {
 		if err := validators.ValidatePropertyParameters(query); err != nil {
 			logs.Error(err)
-			controller.CustomAbort(400, err.Error())
+			controller.writeError(400, err.Error())
 			return
 		}
+
 		var err error
 		filters, err = validators.ParsePropertyFilters(query)
 		if err != nil {
 			logs.Error(err)
-			controller.CustomAbort(400, err.Error())
+			controller.writeError(400, err.Error())
 			return
 		}
 	}
@@ -55,7 +56,7 @@ func (controller *PropertyController) GetProperties() {
 	properties, err := PropertyService.GetAllProperties(filters)
 	if err != nil {
 		logs.Error(err)
-		controller.CustomAbort(500, err.Error())
+		controller.writeError(500, err.Error())
 		return
 	}
 
@@ -75,14 +76,18 @@ func (controller *PropertyController) GetProperty() {
 	property, err := PropertyService.GetPropertyByID(propertyID)
 	if err != nil {
 		logs.Error("Property not found: %v", err)
-
-		controller.Ctx.ResponseWriter.WriteHeader(404)
-		controller.Data["json"] = models.ErrorResponse{
-			Error: "Property not found",
-		}
-		controller.ServeJSON()
+		controller.writeError(404, "Property not found")
 		return
 	}
+
 	controller.Data["json"] = property
+	controller.ServeJSON()
+}
+
+func (controller *PropertyController) writeError(status int, message string) {
+	controller.Ctx.ResponseWriter.WriteHeader(status)
+	controller.Data["json"] = models.ErrorResponse{
+		Error: message,
+	}
 	controller.ServeJSON()
 }
