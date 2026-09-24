@@ -33,8 +33,6 @@ Rental-Property-REST-API/
 │   └── router.go
 ├── services/
 │   └── property.go
-├── tests/
-│   └── property_test.go
 ├── utils/
 │   └── query.go
 ├── validators/
