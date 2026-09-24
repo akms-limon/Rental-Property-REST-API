@@ -6,7 +6,7 @@ import (
 	"Rental-Property-REST-API/models"
 )
 
-// test function for TransformProperty
+// Test function for TransformProperty
 func TestTransformProperty(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -34,10 +34,10 @@ func TestTransformProperty(t *testing.T) {
 		},
 	}
 
-	// Test runner
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			response, err := TransformProperty(test.property)
+
 			if err != nil {
 				t.Fatalf("TransformProperty() returned an error: %v", err)
 			}
@@ -45,25 +45,47 @@ func TestTransformProperty(t *testing.T) {
 			if response.ID != test.property.ID {
 				t.Errorf("ID = %v, want %v", response.ID, test.property.ID)
 			}
+
 			if response.Property.Image.Count != len(test.property.Images) {
-				t.Errorf("Image.Count = %v, want %v", response.Property.Image.Count, len(test.property.Images))
+				t.Errorf(
+					"Image.Count = %v, want %v",
+					response.Property.Image.Count,
+					len(test.property.Images),
+				)
 			}
+
 			if response.GeoInfo.Lon != test.property.LonLat.Coordinates[0] {
-				t.Errorf("Lon = %v, want %v", response.GeoInfo.Lon, test.property.LonLat.Coordinates[0])
+				t.Errorf(
+					"Lon = %v, want %v",
+					response.GeoInfo.Lon,
+					test.property.LonLat.Coordinates[0],
+				)
 			}
+
 			if response.GeoInfo.Lat != test.property.LonLat.Coordinates[1] {
-				t.Errorf("Lat = %v, want %v", response.GeoInfo.Lat, test.property.LonLat.Coordinates[1])
+				t.Errorf(
+					"Lat = %v, want %v",
+					response.GeoInfo.Lat,
+					test.property.LonLat.Coordinates[1],
+				)
 			}
+
 			if len(response.GeoInfo.Breadcrumbs) != 1 {
-				t.Errorf("Breadcrumbs length = %v, want 1", len(response.GeoInfo.Breadcrumbs))
+				t.Errorf(
+					"Breadcrumbs length = %v, want 1",
+					len(response.GeoInfo.Breadcrumbs),
+				)
 			}
+
 			if response.GeoInfo.Breadcrumbs[0].Name != "Dhaka" {
-				t.Errorf("Breadcrumb name = %v, want Dhaka", response.GeoInfo.Breadcrumbs[0].Name)
+				t.Errorf(
+					"Breadcrumb name = %v, want Dhaka",
+					response.GeoInfo.Breadcrumbs[0].Name,
+				)
 			}
 		})
 	}
 }
-
 
 // Helper functions to create pointers for basic types
 func intPtr(value int) *int {
@@ -125,6 +147,83 @@ func TestFilterProperties(t *testing.T) {
 		expected []string
 	}{
 		{
+			name: "minimum price filter",
+			filters: models.PropertyFilters{
+				MinPrice: floatPtr(150),
+			},
+			expected: []string{"P2", "P3"},
+		},
+		{
+			name: "maximum price filter",
+			filters: models.PropertyFilters{
+				MaxPrice: floatPtr(150),
+			},
+			expected: []string{"P1", "P3"},
+		},
+		{
+			name: "minimum star rating filter",
+			filters: models.PropertyFilters{
+				MinStarRating: intPtr(4),
+			},
+			expected: []string{"P1", "P2"},
+		},
+		{
+			name: "minimum review score filter",
+			filters: models.PropertyFilters{
+				MinReviewScore: floatPtr(4),
+			},
+			expected: []string{"P1", "P2"},
+		},
+		{
+			name: "minimum reviews filter",
+			filters: models.PropertyFilters{
+				MinReviews: intPtr(100),
+			},
+			expected: []string{"P1", "P2"},
+		},
+		{
+			name: "published filter",
+			filters: models.PropertyFilters{
+				Published: boolPtr(false),
+			},
+			expected: []string{"P1", "P3"},
+		},
+		{
+			name: "published true filter",
+			filters: models.PropertyFilters{
+				Published: boolPtr(true),
+			},
+			expected: []string{"P2"},
+		},
+		{
+			name: "property type filter",
+			filters: models.PropertyFilters{
+				PropertyType: "Villa",
+			},
+			expected: []string{"P2"},
+		},
+		{
+			name: "feed filter",
+			filters: models.PropertyFilters{
+				Feed: intPtr(11),
+			},
+			expected: []string{"P1", "P2"},
+		},
+		{
+			name: "minimum bedroom filter",
+			filters: models.PropertyFilters{
+				MinBedroom: intPtr(2),
+			},
+			expected: []string{"P1", "P2"},
+		},
+		{
+			name: "amenities OR filter",
+			filters: models.PropertyFilters{
+				Amenities: []string{"Internet", "Pool"},
+			},
+			expected: []string{"P1", "P2"},
+		},
+		{
 			name: "feed and published filters",
 			filters: models.PropertyFilters{
 				Feed:      intPtr(11),
@@ -141,19 +240,25 @@ func TestFilterProperties(t *testing.T) {
 			expected: []string{"P2"},
 		},
 		{
-			name: "amenities OR filter",
-			filters: models.PropertyFilters{
-				Amenities: []string{"Internet", "Pool"},
-			},
-			expected: []string{"P1", "P2"},
-		},
-		{
 			name: "combined feed and amenities filters",
 			filters: models.PropertyFilters{
-				Feed:     intPtr(11),
+				Feed:      intPtr(11),
 				Amenities: []string{"Internet", "Parking"},
 			},
 			expected: []string{"P1"},
+		},
+		{
+			name: "combined scalar filters",
+			filters: models.PropertyFilters{
+				MinPrice:       floatPtr(100),
+				MaxPrice:       floatPtr(200),
+				MinStarRating:  intPtr(4),
+				MinReviewScore: floatPtr(4),
+				MinReviews:     intPtr(100),
+				Feed:           intPtr(11),
+				MinBedroom:     intPtr(2),
+			},
+			expected: []string{"P1", "P2"},
 		},
 		{
 			name: "empty result",
@@ -169,19 +274,26 @@ func TestFilterProperties(t *testing.T) {
 			result := FilterProperties(properties, test.filters)
 
 			if len(result) != len(test.expected) {
-				t.Fatalf("result length = %v, want %v", len(result), len(test.expected))
+				t.Fatalf(
+					"result length = %v, want %v",
+					len(result),
+					len(test.expected),
+				)
 			}
 
 			for i, property := range result {
 				if property.ID != test.expected[i] {
-					t.Errorf("result[%d].ID = %v, want %v", i, property.ID, test.expected[i])
+					t.Errorf(
+						"result[%d].ID = %v, want %v",
+						i,
+						property.ID,
+						test.expected[i],
+					)
 				}
 			}
 		})
 	}
 }
-
-
 
 // Test function for GetPropertyByID
 func TestGetPropertyByID(t *testing.T) {
@@ -209,10 +321,10 @@ func TestGetPropertyByID(t *testing.T) {
 	})
 
 	tests := []struct {
-		name       string
-		id         string
-		wantID     string
-		wantError  bool
+		name      string
+		id        string
+		wantID    string
+		wantError bool
 	}{
 		{
 			name:      "property found",
@@ -233,17 +345,25 @@ func TestGetPropertyByID(t *testing.T) {
 			result, err := service.GetPropertyByID(test.id)
 
 			if (err != nil) != test.wantError {
-				t.Errorf("GetPropertyByID() error = %v, wantError %v", err, test.wantError)
+				t.Errorf(
+					"GetPropertyByID() error = %v, wantError %v",
+					err,
+					test.wantError,
+				)
+
 				return
 			}
 
 			if result.ID != test.wantID {
-				t.Errorf("GetPropertyByID() ID = %v, want %v", result.ID, test.wantID)
+				t.Errorf(
+					"GetPropertyByID() ID = %v, want %v",
+					result.ID,
+					test.wantID,
+				)
 			}
 		})
 	}
 }
-
 
 // Test function for GetAllProperties
 func TestGetAllProperties(t *testing.T) {
@@ -302,12 +422,15 @@ func TestGetAllProperties(t *testing.T) {
 	if err != nil {
 		t.Fatalf("GetAllProperties() returned an error: %v", err)
 	}
+
 	if result.Result.Count != 1 {
 		t.Errorf("Count = %v, want 1", result.Result.Count)
 	}
+
 	if len(result.Result.Items) != 1 {
 		t.Errorf("Items length = %v, want 1", len(result.Result.Items))
 	}
+
 	if result.Result.Items[0].ID != "P1" {
 		t.Errorf("Items[0].ID = %v, want P1", result.Result.Items[0].ID)
 	}
