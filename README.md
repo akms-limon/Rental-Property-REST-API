@@ -321,15 +321,72 @@ curl "http://localhost:8080/v1/properties?feed=11&min_price=50&min_star_rating=4
 
 ## Unit Tests
 
-<!-- Add unit test information here after implementing the tests. -->
+Table-driven unit tests are implemented in the service layer using Go's standard `testing` package.
 
-Run the service tests:
+Test file:
+
+```text
+services/property_test.go
+````
+
+### Test Coverage
+
+The service tests cover the required test cases from the assignment:
+
+| Test Area             | Coverage                                                       |
+| --------------------- | -------------------------------------------------------------- |
+| Transform             | Property mapping, Image.Count, Lat/Lon, and parsed Breadcrumbs |
+| Filter — AND          | Multiple filters applied together                              |
+| Filter — Amenities OR | Property matches at least one requested amenity                |
+| Filter — Combined     | AND filters combined with Amenities OR                         |
+| Empty Result          | No matching properties return an empty slice                   |
+| Get by ID             | Property found and property not found                          |
+
+### Run Unit Tests
+
+Run the service-layer unit tests:
+
+```bash
+go test ./services -v
+```
+
+### Run All Tests
+
+Run all project tests:
 
 ```bash
 go test ./... -v
 ```
 
-Run static analysis:
+### Check Test Coverage
+
+Generate the service-layer coverage profile:
+
+```bash
+go test ./services -coverprofile=coverage.out
+```
+
+Display the coverage by function:
+
+```bash
+go tool cover -func=coverage.out
+```
+
+Current service-layer coverage:
+
+run:
+
+```bash
+go test ./services -cover
+```
+
+```text
+coverage: 80.0% of statements
+```
+
+### Run Go Vet
+
+Run Go's static analysis:
 
 ```bash
 go vet ./...
